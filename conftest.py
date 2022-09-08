@@ -6,6 +6,7 @@ import string
 from dataclasses import dataclass
 from random import choice
 
+#TO DO: check is driver manager is used. Issue with GeckoDriver
 import names
 import pytest
 from selenium import webdriver

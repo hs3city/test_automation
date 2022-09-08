@@ -126,6 +126,6 @@ def test_add_item_to_cart(web_driver: WebDriver, login_user):
     cart_button = web_driver.find_element(By.XPATH, f'//*/li[@class="top-cart"]/a')
     cart_button.click()
     #to refactor - write better xpath and handle multiple items in the cart
-    card_item = web_driver.find_element(By.XPATH, f'//*[@id="post-6"]/div[2]/form/table/tbody/tr[1]/td[@class="product-name"]/a').text
-    assert product in card_item
+    cart_item = web_driver.find_element(By.XPATH, f'//*[@id="post-6"]/div[2]/form/table/tbody/tr[1]/td[@class="product-name"]/a').text
+    assert product in cart_item
 
