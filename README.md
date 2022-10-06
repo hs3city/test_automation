@@ -15,3 +15,14 @@
 5. Instalacja zależności. W Terminalu PyCharm wykonaj: `pip install -r requirement.txt` 
 
 
+## Selenium Grid
+### Start Grid
+
+```console
+docker-compose -f selenium-grid.yaml up -d
+```
+
+### Stop Grid
+```console
+docker-compose -f selenium-grid.yaml down
+```

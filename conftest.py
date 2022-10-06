@@ -6,15 +6,10 @@ import string
 from dataclasses import dataclass
 from random import choice
 
-#TO DO: check is driver manager is used. Issue with GeckoDriver
 import names
 import pytest
 from selenium import webdriver
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.support import expected_conditions as EC
 
 from main import Constants
 
@@ -43,12 +38,12 @@ def web_driver() -> WebDriver:
 
     :return: WebDriver instances
     """
-    firefox_driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
-    firefox_driver.maximize_window()
-    firefox_driver.implicitly_wait(Constants.IMPLICITLY_WAIT)
-    firefox_driver.get(Constants.MAIN_URL)
-    yield firefox_driver
-    firefox_driver.quit()
+    driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', options=webdriver.FirefoxOptions())
+    driver.maximize_window()
+    driver.implicitly_wait(Constants.IMPLICITLY_WAIT)
+    driver.get(Constants.MAIN_URL)
+    yield driver
+    driver.quit()
 
 
 @pytest.fixture
