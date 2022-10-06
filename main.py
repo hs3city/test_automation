@@ -1,7 +1,7 @@
 """
 There is a simple script to automate test cases.
 """
-
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,19 +15,19 @@ class Constants:
     IMPLICITLY_WAIT = 2.0
     MAIN_URL = "http://skleptest.pl/"
     ACCOUNT_BUTTON = (By.XPATH, "//li[@class='top-account']")
-    
+
     LOGIN_BUTTON = (By.XPATH, "//input[@name='login']")
     REG_BUTTON = (By.XPATH, "//input[@class='woocommerce-Button button' and @name='register']")
-    
+
     USERNAME_INPUT_LOG = (By.XPATH, "//input[@id='username']")
     PASSWORD_INPUT_LOG = (By.XPATH, "//input[@id='password']")
-    
+
     ERROR_MESSAGE = (By.XPATH, "//ul[@class='woocommerce-error']")
     HELLO_MESSAGE = (By.XPATH, "//div[@class='woocommerce-MyAccount-content']")
-    
+
     EMAIL_INPUT_REG = (By.XPATH, "//input[@id='reg_email']")
     PASSWORD_INPUT_REG = (By.XPATH, "//input[@id='reg_password']")
-    
+
     REG_LABEL = (By.XPATH, "//h2[contains(text(),'Register')]")
 
 
@@ -37,6 +37,17 @@ class ErrorMessageText:
     """
     USERNAME_REQUIREMENT = "Error: Username is required."
     PASSWORD_EMPTY = "ERROR: The password field is empty."
+
+
+class SharedMethods:
+    @staticmethod
+    def clean_up_cart(web_driver: WebDriver):
+        item_to_remove = web_driver.find_elements(By.XPATH, f'//a[contains(@class, "remove")]')
+        remove_urls = []
+        for item_id in item_to_remove:
+            remove_urls.append(item_id.get_attribute("href"))
+        for remove_url in remove_urls:
+            web_driver.get(remove_url)
 
 
 def test_empty_username_and_password(web_driver: WebDriver):
@@ -120,12 +131,32 @@ def test_user_login(web_driver: WebDriver, get_default_user, login_user):
 def test_add_item_to_cart(web_driver: WebDriver, login_user):
     web_driver.get(Constants.MAIN_URL)
     product = "Little Black Top"
-    add_to_cart_button = web_driver.find_element(By.XPATH, f"//*[normalize-space() = '{product}']//..//a")
-    #add_to_cart_button = web_driver.find_element(By.XPATH, "//a[@data-product_id='17']") - alternative way of search
+    #add_to_cart_button = web_driver.find_element(By.XPATH, f"//*[normalize-space() = '{product}']//..//a")
+    add_to_cart_button = web_driver.find_element(By.XPATH, "//a[@data-product_id='17']") # - alternative way of search
     add_to_cart_button.click()
     cart_button = web_driver.find_element(By.XPATH, f'//*/li[@class="top-cart"]/a')
     cart_button.click()
     #to refactor - write better xpath and handle multiple items in the cart
     cart_item = web_driver.find_element(By.XPATH, f'//*[@id="post-6"]/div[2]/form/table/tbody/tr[1]/td[@class="product-name"]/a').text
     assert product in cart_item
+    SharedMethods.clean_up_cart(web_driver)
 
+
+def test_add_jeans_to_cart(web_driver: WebDriver, login_user):
+    product = "Asabi - Jeans"
+    categories_dropdown = web_driver.find_element(By.ID, "menu-item-123")
+    actions = ActionChains(web_driver)
+    actions.move_to_element(categories_dropdown).perform()
+    jeans_category = web_driver.find_element(By.ID, "menu-item-134")
+    jeans_category.click()
+    add_to_cart_button = web_driver.find_element(By.XPATH, "//a[@data-product_id='52']")
+    add_to_cart_button.click()
+    cart_button = web_driver.find_element(By.XPATH, f'//*/li[@class="top-cart"]/a')
+    cart_button.click()
+    # find all product names in cart:
+    cart_items = web_driver.find_elements(By.XPATH, f'//*[@id="post-6"]/div/form/table/tbody/tr[@class="woocommerce-cart-form__cart-item cart_item"]/td[@class="product-name"]')
+    # last element added to cart:
+    # cart_item = cart_items[len(cart_items) - 1].text
+    cart_item = cart_items[0].text
+    assert product in cart_item
+    SharedMethods.clean_up_cart(web_driver)
