@@ -13,5 +13,5 @@
     - dla Linuxa i MacOS wpisz `source venv/bin/activate`
 
 5. Instalacja zależności. W Terminalu PyCharm wykonaj: `pip install -r requirement.txt` 
-
+6. Uruchomienie naszego testu automatycznego w konsoli: `pytest main.py`
 
