@@ -14,7 +14,9 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.service import Service as ChromiumService
+from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.opera import OperaDriverManager
 from webdriver_manager.core.utils import ChromeType
 
 from main import Constants
@@ -53,7 +55,11 @@ def web_driver(config) -> WebDriver:
     if config['browser'] == 'firefox':
         driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
     elif config['browser'] == 'chrome':
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    elif config['browser'] == 'chromium']:
         driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+    elif config['browser'] == 'opera':
+        driver = webdriver.Opera(executable_path=OperaDriverManager().install())
     else:
        raise Exception(f'"{config["browser"]}" is not a supported browser')
     driver.maximize_window()
