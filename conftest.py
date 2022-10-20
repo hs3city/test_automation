@@ -56,7 +56,7 @@ def web_driver(config) -> WebDriver:
         driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
     elif config['browser'] == 'chrome':
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    elif config['browser'] == 'chromium']:
+    elif config['browser'] == 'chromium':
         driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
     elif config['browser'] == 'opera':
         driver = webdriver.Opera(executable_path=OperaDriverManager().install())
