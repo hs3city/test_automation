@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from decimal import Decimal
 
-#klasa do parsowania elementów w koszyku.
+
+# klasa do parsowania elementów w koszyku.
 @dataclass
 class CartTableItem:
-    #item_class:
+    # item_class:
     name: str
     price: Decimal
     quantity: int
