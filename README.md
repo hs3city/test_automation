@@ -13,10 +13,8 @@
       - Gdy używasz PowerShell  wpisz komende `venv\Scripts\activate.ps1`
       - Gdy używasz cmd wpisz komendę  `venv\Scripts\activate.bat`
     - dla Linuxa i MacOS wpisz `source venv/bin/activate`
-
-5. Instalacja zależności. W Terminalu PyCharm wykonaj: `pip install -r requirement.txt`
-
-## Konfiguracja WebDrivera
+5. Instalacja zależności. W Terminalu PyCharm wykonaj: `pip install -r requirement.txt` 
+6. Uruchomienie naszego testu automatycznego w konsoli przez pytest: `pytest main.py`
 
 Istnieją dwie możliwości uruchamiania testów: lokalna oraz z użyciem Selenium Grid.
 
