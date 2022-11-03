@@ -6,11 +6,9 @@ import string
 from dataclasses import dataclass
 from random import choice
 
-#TO DO: check is driver manager is used. Issue with GeckoDriver
 import names
 import pytest
 from selenium import webdriver
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.service import Service as ChromiumService
@@ -52,7 +50,7 @@ def web_driver(config) -> WebDriver:
     :return: WebDriver instances
     """
     if config['browser'] == 'firefox':
-        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+       driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub', options=webdriver.FirefoxOptions())
     elif config['browser'] == 'chrome':
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     elif config['browser'] == 'chromium':
