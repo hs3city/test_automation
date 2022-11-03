@@ -1,4 +1,5 @@
 .idea/
-/venv/
-/.pytest_cache/
-/geckodriver.log
+venv/
+.pytest_cache/
+geckodriver.log
+.env

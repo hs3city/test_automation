@@ -1,65 +1,80 @@
 """There is module which proved WebDriver instances base on browser name."""
+import os
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.edge.service import Service as EdgeService
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.remote.webdriver import WebDriver
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 from constants.taf_constants import BrowserName
 
 
-class ChromeWebDriver:
-    """Chrome WebDriver."""
-
-    @staticmethod
-    def get_service(self) -> WebDriver:
-        """
-        Starts the service and then creates new instance of chrome driver.
-
-        :return: WebDriver for Chrome
-        """
-        return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+def get_chrome_web_driver():
+    return webdriver.Chrome()
 
 
-class FirefoxWebDriver:
-    """FireFox WebDriver."""
-
-    @staticmethod
-    def get_service() -> WebDriver:
-        """
-        Starts the service and then creates new instance of firefox driver.
-
-        :return: WebDriver for FireFox
-        """
-        return webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+def get_chrome_options():
+    return webdriver.ChromeOptions()
 
 
-class EdgeWebDriver:
-    """Edge WebDriver."""
-
-    @staticmethod
-    def get_service() -> WebDriver:
-        """
-        Starts the service and then creates new instance of edge driver.
-
-        :return: WebDriver for Edge
-        """
-        return webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
+def get_firefox_web_driver():
+    return webdriver.Firefox()
 
 
-class WebDriversFactory:
-    """Collect knows WebDriver for browsers."""
+def get_firefox_options():
+    return webdriver.FirefoxOptions()
 
-    browsers = {
-        BrowserName.CHROME: ChromeWebDriver(),
-        BrowserName.FIREFOX: FirefoxWebDriver(),
-        BrowserName.EDGE: EdgeWebDriver()
+
+def get_edge_web_driver():
+    return webdriver.Edge()
+
+
+def get_edge_options():
+    return webdriver.EdgeOptions()
+
+
+def get_local_web_driver_generator(browser):
+    web_driver_mapping = {
+        BrowserName.CHROME: get_chrome_web_driver,
+        BrowserName.FIREFOX: get_firefox_web_driver,
+        BrowserName.EDGE: get_edge_web_driver,
     }
+    web_driver_generator = web_driver_mapping.get(browser)
+    return web_driver_generator
 
-    def get_web_driver(self, browser_name: str) -> WebDriver:
-        """Provide WebDriver object by specify browser e.g. for FireFox, Chrome, Edge"""
-        return self.browsers.get(browser_name).get_service()
+
+def get_remote_web_driver_options(browser):
+    web_driver_options_mapping = {
+        BrowserName.CHROME: get_chrome_options(),
+        BrowserName.EDGE: get_edge_options(),
+        BrowserName.FIREFOX: get_firefox_options(),
+    }
+    web_driver = web_driver_options_mapping.get(browser)
+    return web_driver
+
+
+def set_web_driver_options(web_driver):
+    web_driver.maximize_window()
+    wait_time = os.environ.get("WAIT_TIME", 2.0)
+    web_driver.implicitly_wait(wait_time)
+    main_url = os.environ.get("MAIN_URL", "http://skleptest.pl/")
+    web_driver.get(main_url)
+
+
+def get_web_driver():
+    selenium_grid_url = os.environ.get("SELENIUM_GRID_URL")
+    browser = os.environ.get("BROWSER", BrowserName.CHROME)
+
+    if not selenium_grid_url:
+        web_driver_generator = get_local_web_driver_generator(browser)
+        web_driver = web_driver_generator()
+    else:
+        web_driver_options = get_remote_web_driver_options(browser)
+        web_driver = webdriver.Remote(
+            command_executor=selenium_grid_url,
+            options=web_driver_options,
+        )
+
+    if not web_driver:
+        raise ValueError(f"Browser {browser} does not exist")
+
+    set_web_driver_options(web_driver)
+
+    return web_driver
