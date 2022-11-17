@@ -1,6 +1,0 @@
-{
-  "browser": "chrome",
-  "selenium_grid": "false",
-  "selenium_grid_url": "testurl.com",
-  "wait_time": 10
-}

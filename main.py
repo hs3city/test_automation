@@ -12,8 +12,6 @@ class Constants:
     """
     This class provides constants for WebDriver to find something elements.
     """
-    IMPLICITLY_WAIT = 2.0
-    MAIN_URL = "http://skleptest.pl/"
     ACCOUNT_BUTTON = (By.XPATH, "//li[@class='top-account']")
 
     LOGIN_BUTTON = (By.XPATH, "//input[@name='login']")
