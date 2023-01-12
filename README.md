@@ -1,5 +1,9 @@
 # test_automation
 
+## Sklep testowy
+
+Obecnie testujemy instancję sklepu dostępną w sieci Hackerspace Trójmiasto pod adresem http://192.168.1.226/
+
 ## Instalacja podstawowa
 
 1. Instalacja [PyCharm](https://www.jetbrains.com/pycharm/download/) 
